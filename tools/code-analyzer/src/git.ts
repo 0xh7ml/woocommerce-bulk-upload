@@ -84,3 +84,42 @@ export const generatePatch = (
 	CliUx.ux.action.stop();
 	return content;
 };
+
+export const getSchema = (
+	branch: string,
+	error: ( s: string ) => void
+): string | undefined => {
+	try {
+		// Make sure the branch is available.
+		fetchBranch( branch, error );
+		// Save the current branch for later.
+		const currentBranch = execSync( 'git rev-parse --abbrev-ref HEAD' );
+		// Checkout branch to compare
+		execSync( `git checkout ${ branch }` );
+		// Get the schema from wp cli
+		const schema = execSync(
+			`wp-env run cli "wp eval-file 'wp-content/plugins/woocommerce/bin/get-schema.php'"`,
+			{
+				cwd: 'plugins/woocommerce',
+				encoding: 'utf-8',
+			}
+		);
+		// Return to the current branch.
+		execSync( `git checkout ${ currentBranch }` );
+
+		return schema;
+	} catch {
+		error( `Unable to get schema for branch ${ branch }.` );
+	}
+};
+
+export const generateSchemaDiff = (
+	source: string,
+	compare: string,
+	base: string,
+	error: ( s: string ) => void
+): Array< string | undefined > => {
+	const baseSchema = getSchema( base, error );
+	const compareSchema = getSchema( compare, error );
+	return [ baseSchema, compareSchema ];
+};

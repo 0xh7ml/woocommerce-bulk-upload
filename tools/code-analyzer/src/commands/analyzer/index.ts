@@ -4,6 +4,7 @@
 import { CliUx, Command, Flags } from '@oclif/core';
 import { join } from 'path';
 import { readFileSync } from 'fs';
+import { execSync } from 'child_process';
 
 /**
  * Internal dependencies
@@ -16,7 +17,7 @@ import {
 	getPatches,
 	getHookName,
 } from '../../utils';
-import { generatePatch } from '../../git';
+import { generatePatch, generateSchemaDiff } from '../../git';
 
 /**
  * Analyzer class
@@ -82,10 +83,24 @@ export default class Analyzer extends Command {
 			( e: string ): void => this.error( e )
 		);
 
+		const schemaDiff = generateSchemaDiff(
+			flags.source,
+			args.compare,
+			flags.base,
+			( e: string ): void => this.error( e )
+		);
+
+		const schemaEquality = schemaDiff[ 0 ] === schemaDiff[ 1 ];
+
 		const pluginData = this.getPluginData( flags.plugin );
 		this.log( `${ pluginData[ 1 ] } Version: ${ pluginData[ 0 ] }` );
 
-		this.scanChanges( patchContent, pluginData[ 0 ], flags.output );
+		this.scanChanges(
+			patchContent,
+			pluginData[ 0 ],
+			flags.output,
+			schemaEquality
+		);
 	}
 
 	/**
@@ -162,17 +177,20 @@ export default class Analyzer extends Command {
 	/**
 	 * Scan patches for changes in templates, hooks and database schema
 	 *
-	 * @param {string} content Patch content.
-	 * @param {string} version Current product version.
-	 * @param {string} output  Output style.
+	 * @param {string}  content        Patch content.
+	 * @param {string}  version        Current product version.
+	 * @param {string}  output         Output style.
+	 * @param {boolean} schemaEquality if schemas are equal between branches.
 	 */
 	private scanChanges(
 		content: string,
 		version: string,
-		output: string
+		output: string,
+		schemaEquality: boolean
 	): void {
 		const templates = this.scanTemplates( content, version );
 		const hooks = this.scanHooks( content, version, output );
+		// const databases = await this.scanDatabases( content );
 
 		if ( templates.size ) {
 			printTemplateResults(
@@ -192,6 +210,29 @@ export default class Analyzer extends Command {
 		} else {
 			this.log( 'No new hooks found' );
 		}
+
+		if ( ! schemaEquality ) {
+			console.log( 'Print out Notice here' );
+		} else {
+			this.log( 'No new schema changes found' );
+		}
+	}
+	/**
+	 * Scan patches for changes in the database
+	 *
+	 * @return {Promise<Map<string, string[]>>} Promise.
+	 */
+	private async scanDatabases(): Promise< void > {
+		CliUx.ux.action.start( 'Scanning database changes' );
+		// const schema = execSync(
+		// 	`wp-env run cli "wp eval-file 'wp-content/plugins/woocommerce/bin/get-schema.php'"`,
+		// 	{
+		// 		cwd: 'plugins/woocommerce',
+		// 		encoding: 'utf-8',
+		// 	}
+		// );
+		// console.log( schema );
+		CliUx.ux.action.stop();
 	}
 
 	/**
