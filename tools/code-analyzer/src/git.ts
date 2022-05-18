@@ -90,6 +90,7 @@ export const getSchema = (
 	error: ( s: string ) => void
 ): string | undefined => {
 	try {
+		CliUx.ux.action.start( `Gathering schema from ${ branch }` );
 		// Make sure the branch is available.
 		fetchBranch( branch, error );
 		// Save the current branch for later.
@@ -107,6 +108,7 @@ export const getSchema = (
 		// Return to the current branch.
 		execSync( `git checkout ${ currentBranch }` );
 
+		CliUx.ux.action.stop();
 		return schema;
 	} catch {
 		error( `Unable to get schema for branch ${ branch }.` );
