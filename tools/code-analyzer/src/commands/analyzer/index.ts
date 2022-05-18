@@ -244,10 +244,16 @@ export default class Analyzer extends Command {
 		const databaseUpdatePatch = patches.find( ( patch ) => {
 			const lines = patch.split( '\n' );
 			const filepath = getFilename( lines[ 0 ] );
-			return filepath.includes( 'wc-update-functions.php' );
+			return filepath.includes( 'class-wc-install.php' );
 		} );
 
-		console.log( databaseUpdatePatch );
+		if ( ! databaseUpdatePatch ) {
+			return report;
+		}
+
+		const updateFunctionRegex = /\+\s*'\d.\d.\d' => array\(\n\+\s*'(.*)',\n\+\s*\),/gm;
+		const match = databaseUpdatePatch.match( updateFunctionRegex );
+		console.log( match );
 
 		CliUx.ux.action.stop();
 		return report;
