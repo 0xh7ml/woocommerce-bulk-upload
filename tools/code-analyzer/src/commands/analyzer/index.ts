@@ -251,10 +251,10 @@ export default class Analyzer extends Command {
 			return report;
 		}
 
-		const updateFunctionRegex = /\+\s*'\d.\d.\d' => array\(\n\+\s*'(.*)',\n\+\s*\),/m;
+		const updateFunctionRegex = /\+\+\s*'\d.\d.\d' => array\(\n\+\+\s*'(.*)',\n\+\+\s*\),/m;
 		const match = databaseUpdatePatch.match( updateFunctionRegex );
-		console.log( databaseUpdatePatch );
-		// console.log( match );
+		// console.log( databaseUpdatePatch );
+		console.log( match );
 
 		CliUx.ux.action.stop();
 		return report;
