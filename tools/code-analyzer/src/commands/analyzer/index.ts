@@ -241,12 +241,14 @@ export default class Analyzer extends Command {
 		>();
 		const matchPatches = /^a\/(.+).php/g;
 		const patches = getPatches( content, matchPatches );
-		for ( const p in patches ) {
-			const patch = patches[ p ];
+		const databaseUpdatePatch = patches.find( ( patch ) => {
 			const lines = patch.split( '\n' );
 			const filepath = getFilename( lines[ 0 ] );
-			console.log( filepath );
-		}
+			return filepath.includes( 'wc-update-functions.php' );
+		} );
+
+		console.log( databaseUpdatePatch );
+
 		CliUx.ux.action.stop();
 		return report;
 	}
