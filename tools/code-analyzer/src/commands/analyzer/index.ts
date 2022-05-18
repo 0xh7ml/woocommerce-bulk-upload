@@ -4,7 +4,6 @@
 import { CliUx, Command, Flags } from '@oclif/core';
 import { join } from 'path';
 import { readFileSync } from 'fs';
-import { execSync } from 'child_process';
 
 /**
  * Internal dependencies
@@ -90,8 +89,6 @@ export default class Analyzer extends Command {
 			( e: string ): void => this.error( e )
 		);
 
-		const schemaEquality = schemaDiff[ 0 ] === schemaDiff[ 1 ];
-
 		const pluginData = this.getPluginData( flags.plugin );
 		this.log( `${ pluginData[ 1 ] } Version: ${ pluginData[ 0 ] }` );
 
@@ -99,7 +96,7 @@ export default class Analyzer extends Command {
 			patchContent,
 			pluginData[ 0 ],
 			flags.output,
-			schemaEquality
+			schemaDiff[ 0 ] === schemaDiff[ 1 ]
 		);
 	}
 
