@@ -9,7 +9,11 @@ import { readFileSync } from 'fs';
  * Internal dependencies
  */
 import { MONOREPO_ROOT } from '../../const';
-import { printTemplateResults, printHookResults } from '../../print';
+import {
+	printTemplateResults,
+	printHookResults,
+	printSchemaChange,
+} from '../../print';
 import {
 	getVersionRegex,
 	getFilename,
@@ -187,7 +191,7 @@ export default class Analyzer extends Command {
 	): void {
 		const templates = this.scanTemplates( content, version );
 		const hooks = this.scanHooks( content, version, output );
-		// const databases = await this.scanDatabases( content );
+		// const databases = await this.scanDatabases( content, version );
 
 		if ( templates.size ) {
 			printTemplateResults(
@@ -209,7 +213,9 @@ export default class Analyzer extends Command {
 		}
 
 		if ( ! schemaEquality ) {
-			console.log( 'Print out Notice here' );
+			printSchemaChange( version, output, ( s: string ): void =>
+				this.log( s )
+			);
 		} else {
 			this.log( 'No new schema changes found' );
 		}

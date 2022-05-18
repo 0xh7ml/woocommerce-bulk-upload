@@ -89,3 +89,18 @@ export const printHookResults = (
 		}
 	}
 };
+
+export const printSchemaChange = (
+	version: string,
+	output: string,
+	log: ( s: string ) => void
+): void => {
+	if ( output === 'github' ) {
+		// Add Github output here
+	} else {
+		log( '\n## Schema changes detected' );
+		log( '\n\n---------------------------------------------------' );
+		log( `NOTICE | Schema changes detected | Introduced in ${ version }` );
+		log( '\n\n---------------------------------------------------' );
+	}
+};
