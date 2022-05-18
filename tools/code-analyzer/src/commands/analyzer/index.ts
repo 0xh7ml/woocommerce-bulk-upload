@@ -253,8 +253,9 @@ export default class Analyzer extends Command {
 
 		const updateFunctionRegex = /\+\+\s*'\d.\d.\d' => array\(\n\+\+\s*'(.*)',\n\+\+\s*\),/m;
 		const match = databaseUpdatePatch.match( updateFunctionRegex );
-		// console.log( databaseUpdatePatch );
-		console.log( match );
+		const updateFunctionName = match[ 1 ];
+
+		console.log( updateFunctionName );
 
 		CliUx.ux.action.stop();
 		return report;
