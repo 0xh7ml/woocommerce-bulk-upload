@@ -223,19 +223,32 @@ export default class Analyzer extends Command {
 	/**
 	 * Scan patches for changes in the database
 	 *
+	 * @param {string} content Patch content.
+	 * @param {string} version Current product version.
+	 * @param {string} output  Output style.
 	 * @return {Promise<Map<string, string[]>>} Promise.
 	 */
-	private async scanDatabases(): Promise< void > {
+	private async scanDatabases(
+		content: string,
+		version: string,
+		output: string
+	): Promise< Map< string, Map< string, string[] > > > {
 		CliUx.ux.action.start( 'Scanning database changes' );
-		// const schema = execSync(
-		// 	`wp-env run cli "wp eval-file 'wp-content/plugins/woocommerce/bin/get-schema.php'"`,
-		// 	{
-		// 		cwd: 'plugins/woocommerce',
-		// 		encoding: 'utf-8',
-		// 	}
-		// );
-		// console.log( schema );
+
+		const report: Map< string, Map< string, string[] > > = new Map<
+			string,
+			Map< string, string[] >
+		>();
+		const matchPatches = /^a\/(.+).php/g;
+		const patches = getPatches( content, matchPatches );
+		for ( const p in patches ) {
+			const patch = patches[ p ];
+			const lines = patch.split( '\n' );
+			const filepath = getFilename( lines[ 0 ] );
+			console.log( filepath );
+		}
 		CliUx.ux.action.stop();
+		return report;
 	}
 
 	/**
