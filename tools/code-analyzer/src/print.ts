@@ -99,8 +99,8 @@ export const printSchemaChange = (
 		// Add Github output here
 	} else {
 		log( '\n## Schema changes' );
-		log( '\n---------------------------------------------------' );
+		log( '---------------------------------------------------' );
 		log( `NOTICE | Schema changes detected in ${ version }` );
-		log( '\n---------------------------------------------------' );
+		log( '---------------------------------------------------' );
 	}
 };
