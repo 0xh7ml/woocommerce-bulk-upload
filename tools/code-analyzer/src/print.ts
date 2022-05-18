@@ -98,9 +98,9 @@ export const printSchemaChange = (
 	if ( output === 'github' ) {
 		// Add Github output here
 	} else {
-		log( '\n## Schema changes detected' );
-		log( '\n\n---------------------------------------------------' );
-		log( `NOTICE | Schema changes detected | Introduced in ${ version }` );
-		log( '\n\n---------------------------------------------------' );
+		log( '\n## Schema changes' );
+		log( '\n---------------------------------------------------' );
+		log( `NOTICE | Schema changes detected in ${ version }` );
+		log( '\n---------------------------------------------------' );
 	}
 };
