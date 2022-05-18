@@ -191,7 +191,7 @@ export default class Analyzer extends Command {
 	): void {
 		const templates = this.scanTemplates( content, version );
 		const hooks = this.scanHooks( content, version, output );
-		// const databases = await this.scanDatabases( content, version );
+		const databases = this.scanDatabases( content, version, output );
 
 		if ( templates.size ) {
 			printTemplateResults(
@@ -228,11 +228,11 @@ export default class Analyzer extends Command {
 	 * @param {string} output  Output style.
 	 * @return {Promise<Map<string, string[]>>} Promise.
 	 */
-	private async scanDatabases(
+	private scanDatabases(
 		content: string,
 		version: string,
 		output: string
-	): Promise< Map< string, Map< string, string[] > > > {
+	): Map< string, Map< string, string[] > > {
 		CliUx.ux.action.start( 'Scanning database changes' );
 
 		const report: Map< string, Map< string, string[] > > = new Map<
