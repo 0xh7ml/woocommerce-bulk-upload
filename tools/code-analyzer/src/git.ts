@@ -90,9 +90,10 @@ export const getSchema = (
 	error: ( s: string ) => void
 ): string | undefined => {
 	try {
-		CliUx.ux.action.start( `Gathering schema from ${ branch }` );
 		// Make sure the branch is available.
 		fetchBranch( branch, error );
+		// Start spinner.
+		CliUx.ux.action.start( `Gathering schema from ${ branch }` );
 		// Save the current branch for later.
 		const currentBranch = execSync( 'git rev-parse --abbrev-ref HEAD' );
 		// Checkout branch to compare
