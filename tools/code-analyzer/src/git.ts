@@ -5,7 +5,7 @@ import { CliUx } from '@oclif/core';
 import { execSync } from 'child_process';
 import { join } from 'path';
 import { tmpdir } from 'os';
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 
 /**
  * Fetch branches from origin.
@@ -98,14 +98,29 @@ export const getSchema = (
 		const currentBranch = execSync( 'git rev-parse --abbrev-ref HEAD' );
 		// Checkout branch to compare
 		execSync( `git checkout ${ branch }` );
-		// Get the schema from wp cli
-		const schema = execSync(
-			`wp-env run cli "wp eval-file 'wp-content/plugins/woocommerce/bin/get-schema.php'"`,
-			{
-				cwd: 'plugins/woocommerce',
-				encoding: 'utf-8',
-			}
-		);
+
+		const getSchemaPath =
+			'wp-content/plugins/woocommerce/bin/get-schema.php';
+		let schema;
+
+		// Make sure get-schema.php exists.
+		if ( existsSync( getSchemaPath ) ) {
+			// Get the schema from wp cli
+			schema = execSync(
+				`wp-env run cli "wp eval-file '${ getSchemaPath }'"`,
+				{
+					cwd: 'plugins/woocommerce',
+					encoding: 'utf-8',
+				}
+			);
+		} else {
+			// Return to the current branch.
+			execSync( `git checkout ${ currentBranch }` );
+
+			throw new Error(
+				`File ${ getSchemaPath } does not exist in branch ${ branch }.`
+			);
+		}
 		// Return to the current branch.
 		execSync( `git checkout ${ currentBranch }` );
 
