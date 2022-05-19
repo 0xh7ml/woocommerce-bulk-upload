@@ -112,6 +112,14 @@ export const printSchemaChange = (
 	}
 };
 
+/**
+ *
+ * @param {Object}   databaseUpdates                       Database update info.
+ * @param {string}   databaseUpdates.updateFunctionName    Database upodate function name.
+ * @param {string}   databaseUpdates.updateFunctionVersion Database update version.
+ * @param {string}   output                                Output style.
+ * @param {Function} log                                   Print method.
+ */
 export const printDatabaseUpdates = (
 	{
 		updateFunctionName,

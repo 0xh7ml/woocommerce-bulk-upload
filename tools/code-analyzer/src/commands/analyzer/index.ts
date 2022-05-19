@@ -87,22 +87,32 @@ export default class Analyzer extends Command {
 			( e: string ): void => this.error( e )
 		);
 
-		const schemaDiff = generateSchemaDiff(
-			flags.source,
-			args.compare,
-			flags.base,
-			( e: string ): void => this.error( e )
-		);
-
 		const pluginData = this.getPluginData( flags.plugin );
 		this.log( `${ pluginData[ 1 ] } Version: ${ pluginData[ 0 ] }` );
 
-		this.scanChanges(
-			patchContent,
-			pluginData[ 0 ],
-			flags.output,
-			schemaDiff[ 0 ] === schemaDiff[ 1 ]
-		);
+		// Avoid running this on CI for now.
+		if ( flags.output === 'console' ) {
+			const schemaDiff = generateSchemaDiff(
+				flags.source,
+				args.compare,
+				flags.base,
+				( e: string ): void => this.error( e )
+			);
+
+			this.scanChanges(
+				patchContent,
+				pluginData[ 0 ],
+				flags.output,
+				schemaDiff[ 0 ] === schemaDiff[ 1 ]
+			);
+		} else {
+			this.scanChanges(
+				patchContent,
+				pluginData[ 0 ],
+				flags.output,
+				true
+			);
+		}
 	}
 
 	/**
