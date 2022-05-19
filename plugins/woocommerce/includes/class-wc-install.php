@@ -208,10 +208,7 @@ class WC_Install {
 		),
 		'6.5.1' => array(
 			'wc_update_651_approved_download_directories',
-		),
-		'6.5.2' => array(
-			'wc_update_652_approved_things',
-		),
+		)
 	);
 
 	/**
@@ -1200,7 +1197,7 @@ CREATE TABLE {$wpdb->prefix}wc_product_meta_lookup (
   `rating_count` bigint(20) NULL default 0,
   `average_rating` decimal(3,2) NULL default 0.00,
   `total_sales` bigint(20) NULL default 0,
-  `tax_status` varchar(100) NULL default 'nontaxable',
+  `tax_status` varchar(100) NULL default 'taxable',
   `tax_class` varchar(100) NULL default '',
   PRIMARY KEY  (`product_id`),
   KEY `virtual` (`virtual`),

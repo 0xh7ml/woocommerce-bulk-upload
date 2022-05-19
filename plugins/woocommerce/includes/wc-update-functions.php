@@ -2430,7 +2430,3 @@ function wc_update_651_approved_download_directories() {
 	$directory_sync->init_hooks();
 	$directory_sync->init_feature( true, false );
 }
-
-function wc_update_652_approved_things() {
-	echo "Hello World";
-}
