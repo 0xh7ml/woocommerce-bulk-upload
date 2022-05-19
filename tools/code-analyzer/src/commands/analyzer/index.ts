@@ -175,7 +175,7 @@ export default class Analyzer extends Command {
 		const hooks = await this.scanHooks( content, version, output );
 
 		if ( templates.size ) {
-			await printTemplateResults(
+			printTemplateResults(
 				templates,
 				output,
 				'TEMPLATE CHANGES',
@@ -186,11 +186,8 @@ export default class Analyzer extends Command {
 		}
 
 		if ( hooks.size ) {
-			await printHookResults(
-				hooks,
-				output,
-				'HOOKS',
-				( s: string ): void => this.log( s )
+			printHookResults( hooks, output, 'HOOKS', ( s: string ): void =>
+				this.log( s )
 			);
 		} else {
 			this.log( 'No new hooks found' );
