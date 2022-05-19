@@ -75,7 +75,7 @@ export default class Analyzer extends Command {
 
 		await this.validateArgs( flags.source );
 
-		const patchContent = await generatePatch(
+		const patchContent = generatePatch(
 			flags.source,
 			args.compare,
 			flags.base,
