@@ -127,7 +127,7 @@ export const getSchema = (
 		CliUx.ux.action.stop();
 		return schema;
 	} catch ( e ) {
-		error( `Unable to get schema for branch ${ branch }. ${ e }` );
+		error( `Unable to get schema for branch ${ branch }. \n${ e }` );
 	}
 };
 
