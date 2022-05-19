@@ -116,6 +116,15 @@ export const getSchema = (
 	}
 };
 
+/**
+ * Generate a schema for each branch being compared.
+ *
+ * @param {string}   source  The GitHub repository.
+ * @param {string}   compare Branch/commit hash to compare against the base.
+ * @param {string}   base    Base branch/commit hash.
+ * @param {Function} error   error print method.
+ * @return {Array<string|undefined>} patch string.
+ */
 export const generateSchemaDiff = (
 	source: string,
 	compare: string,

@@ -90,6 +90,13 @@ export const printHookResults = (
 	}
 };
 
+/**
+ *  Print Schema change results.
+ *
+ * @param {string}   version Version change was introduced.
+ * @param {string}   output  Output style.
+ * @param {Function} log     Print method.
+ */
 export const printSchemaChange = (
 	version: string,
 	output: string,
@@ -98,9 +105,11 @@ export const printSchemaChange = (
 	if ( output === 'github' ) {
 		// Add Github output here
 	} else {
-		log( '\n## Schema changes' );
+		log( '\n## SCHEMA CHANGES' );
 		log( '---------------------------------------------------' );
 		log( `NOTICE | Schema changes detected in ${ version }` );
 		log( '---------------------------------------------------' );
 	}
 };
+
+export const printDatabaseUpdates = (): void => {};
