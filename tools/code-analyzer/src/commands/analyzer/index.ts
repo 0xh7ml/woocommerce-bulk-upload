@@ -13,6 +13,7 @@ import {
 	printTemplateResults,
 	printHookResults,
 	printSchemaChange,
+	printDatabaseUpdates,
 } from '../../print';
 import {
 	getVersionRegex,
@@ -191,7 +192,7 @@ export default class Analyzer extends Command {
 	): void {
 		const templates = this.scanTemplates( content, version );
 		const hooks = this.scanHooks( content, version, output );
-		const databases = this.scanDatabases( content, version, output );
+		const databaseUpdates = this.scanDatabases( content );
 
 		if ( templates.size ) {
 			printTemplateResults(
@@ -219,6 +220,16 @@ export default class Analyzer extends Command {
 		} else {
 			this.log( 'No new schema changes found' );
 		}
+
+		if ( databaseUpdates ) {
+			printDatabaseUpdates(
+				databaseUpdates,
+				output,
+				( s: string ): void => this.log( s )
+			);
+		} else {
+			this.log( 'No database updates found' );
+		}
 	}
 	/**
 	 * Scan patches for changes in the database
@@ -226,19 +237,12 @@ export default class Analyzer extends Command {
 	 * @param {string} content Patch content.
 	 * @param {string} version Current product version.
 	 * @param {string} output  Output style.
-	 * @return {Promise<Map<string, string[]>>} Promise.
+	 * @return {object|null}
 	 */
 	private scanDatabases(
-		content: string,
-		version: string,
-		output: string
-	): Map< string, Map< string, string[] > > {
+		content: string
+	): { updateFunctionName: string; updateFunctionVersion: string } | null {
 		CliUx.ux.action.start( 'Scanning database changes' );
-
-		const report: Map< string, Map< string, string[] > > = new Map<
-			string,
-			Map< string, string[] >
-		>();
 		const matchPatches = /^a\/(.+).php/g;
 		const patches = getPatches( content, matchPatches );
 		const databaseUpdatePatch = patches.find( ( patch ) => {
@@ -248,17 +252,19 @@ export default class Analyzer extends Command {
 		} );
 
 		if ( ! databaseUpdatePatch ) {
-			return report;
+			return null;
 		}
 
 		const updateFunctionRegex = /\+\+\s*'(\d.\d.\d)' => array\(\n\+\+\s*'(.*)',\n\+\+\s*\),/m;
 		const match = databaseUpdatePatch.match( updateFunctionRegex );
-		const updateFunctionName = match ? match[ 1 ] : null;
 
-		console.log( match );
-
+		if ( ! match ) {
+			return null;
+		}
+		const updateFunctionVersion = match[ 1 ];
+		const updateFunctionName = match[ 2 ];
 		CliUx.ux.action.stop();
-		return report;
+		return { updateFunctionName, updateFunctionVersion };
 	}
 
 	/**

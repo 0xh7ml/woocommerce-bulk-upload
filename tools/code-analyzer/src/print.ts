@@ -103,13 +103,31 @@ export const printSchemaChange = (
 	log: ( s: string ) => void
 ): void => {
 	if ( output === 'github' ) {
-		// Add Github output here
+		// Add Github output here.
 	} else {
 		log( '\n## SCHEMA CHANGES' );
 		log( '---------------------------------------------------' );
-		log( `NOTICE | Schema changes detected in ${ version }` );
+		log( ` NOTICE | Schema changes detected in ${ version }` );
 		log( '---------------------------------------------------' );
 	}
 };
 
-export const printDatabaseUpdates = (): void => {};
+export const printDatabaseUpdates = (
+	{
+		updateFunctionName,
+		updateFunctionVersion,
+	}: { updateFunctionName: string; updateFunctionVersion: string },
+	output: string,
+	log: ( s: string ) => void
+): void => {
+	if ( output === 'github' ) {
+		// Add Github output here.
+	} else {
+		log( '\n## DATABASE UPDATES' );
+		log( '---------------------------------------------------' );
+		log(
+			` NOTICE | Database update found | ${ updateFunctionName } introduced in ${ updateFunctionVersion }`
+		);
+		log( '---------------------------------------------------' );
+	}
+};
